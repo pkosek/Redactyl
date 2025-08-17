@@ -1,0 +1,10 @@
+pymupdf==1.24.9; python_version < "3.13"
+opencv-python-headless==4.11.0.86
+PyYAML==6.0.2
+pytesseract==0.3.13
+PyPDF2
+reportlab
+
+# Additional dependencies for improved OCR on images
+easyocr
+torch

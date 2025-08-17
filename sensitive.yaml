@@ -1,0 +1,73 @@
+version: 1
+
+# Normalization rules applied to both your entries and the PDF/OCR text
+normalization:
+  case_insensitive: true
+  strip_accents: true
+  collapse_whitespace: true
+  ignore_chars: "-_./ "   # ignored when matching (so 07 123 456 789 == 07123456789)
+
+targets:
+  names:
+    exact:
+      - "Joe Bloggs"  # my name
+      - "John Smith"  # example name
+    regex:
+      - "\\bG\\.?\\s*Bloggs\\b"  # optional examples
+
+  addresses:
+    exact:
+      - "1 High Street, London"  # my address
+
+
+    regex:
+      - '(?i)\b(GIR\s?0AA|(?:(?:[A-PR-UWYZ][0-9][0-9]?|[A-PR-UWYZ][A-HK-Y][0-9][0-9]?|[A-PR-UWYZ][0-9][A-HJKPSTUW]?|[A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))\s?[0-9][ABD-HJLNP-UW-Z]{2})\b'
+
+  emails:
+    exact:
+      - "joe@bloggs.co.uk"  # my email
+    regex: 
+      - '(?i)(?<![A-Z0-9._%+-])[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}(?![A-Z0-9._%+-])'  # email regex, case insensitive
+
+  phones:
+    exact:
+      - "+44 20 7946 0951" # my mobile
+    regex: 
+      - '(?i)(?:\+?44|0)\s*\(?7\d{2}\)?[\s\-]?\d{3}[\s\-]?\d{4}\b' # Mobile numbers: +44 7… with reasonable lengths
+      - '(?i)(?:\+?44|0)\s*\(?[123]\d\)?[\s\-]?\d{3,4}[\s\-]?\d{4}\b' # Landlines: +44 1/2/3… with reasonable lengths
+
+  bank:
+    exact:
+      - "16-10-00"       # sort code
+      - "11111111"       # account number
+      - "GB12BARC20000012345678"  # IBAN
+    regex: 
+      - '(?i)\b\d{2}[\s\-]?\d{2}[\s\-]?\d{2}\b' # sort code
+      - '(?i)(?<!\d)\d{8}(?!\d)' # 8-digit account numbers
+      - '(?i)\bGB\d{2}[A-Z0-9]{4}\s?[A-Z0-9]{14,28}\b' # IBAN (GB.. up to 34 chars), tolerant
+
+  payment_cards:
+    # Visa/Mastercard/Amex basic match with separators
+    regex:
+      - '(?i)\b(?:4\d{3}|5[1-5]\d{2})[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b'   # Visa/Mastercard
+      - '(?i)\b3[47]\d{2}[\s\-]?\d{6}[\s\-]?\d{5}\b'                            # Amex
+    
+  ni_numbers:
+    exact:
+      #- "QQ123456C"
+    regex: 
+      - '(?i)\b(?!BG|GB|NK|TN|ZZ)[A-CEGHJ-PR-TW-Z]{2}\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]\b'
+
+  ids:
+    exact:
+      - "K123456789AB"           # my driving licence
+    regex: 
+      - '(?i)(?<!\d)\d{9}(?!\d)' # 9-digit numbers, such as passport numbers
+      - '(?i)\b[A-Z9]{5}\d{6}[A-Z]{2}\d{2}\b' # Driving licence numbers, such as K123456789AB
+
+  misc:
+    exact:
+      - "MySuperSecretPIN1234"
+    regex:
+      - '(?=(?:.*\d){2,})[A-Z0-9]{8}\b' # 8 char ID, such as PB9DQRE1
+      - '(?i)\b\d{3}\s?\d{3}\s?\d{4}\b' # # NHS number (10 digits, often spaced)
