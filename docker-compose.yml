@@ -1,0 +1,9 @@
+services:
+  redactyl:
+    build: .
+    environment:
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./sensitive.yaml:/app/sensitive.yaml:ro
